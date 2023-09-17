@@ -10,8 +10,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly("ProductManager.API")
+                configuration.GetConnectionString("DefaultConnection")
             )
         );
 
