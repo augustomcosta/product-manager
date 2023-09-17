@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>Product_Manager</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +22,8 @@
 
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
+      <Folder Include="Application\" />
+      <Folder Include="Data\Database\" />
     </ItemGroup>
 
 </Project>
