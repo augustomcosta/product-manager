@@ -15,23 +15,29 @@ namespace CrudProductManager.ConsoleApp.Services
             _httpClient.BaseAddress = new Uri("http://localhost:5268/");
         }
 
-        public async Task<HttpResponseMessage> GetAll()
+        public async Task<List<Product>> GetAll()
         {
             try
             {
                 var response = await _httpClient.GetAsync("api/Product");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"Successfully found products: {response}");
+                    var produtos = await response.Content.ReadFromJsonAsync<List<Product>>();
+                    Console.WriteLine("Products:");
+                    foreach (var produto in produtos)
+                    {
+                        Console.WriteLine($"ID: {produto.Id}, Name: {produto.Name}, Description: {produto.Description}, Price: {produto.Price}");
+                    }
+
+                    return produtos;
                 }
                 else
                 {
                     string content = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Failed to get products. Status Code: {response.StatusCode}, Content: {content}");
+                    return null;
                 }
-
-                return response;
             }
             catch (HttpRequestException e)
             {
@@ -44,6 +50,7 @@ namespace CrudProductManager.ConsoleApp.Services
                 throw;
             }
         }
+
 
         public async Task<HttpResponseMessage> GetById(int id)
         {
@@ -83,12 +90,11 @@ namespace CrudProductManager.ConsoleApp.Services
                 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"Successfully created the product");
+                    Console.WriteLine($"Successfully created the product: {await response.Content.ReadAsStringAsync()}");
                 }
                 else
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Failed to create the product. Status Code: {response.StatusCode}, Content: {content}");
+                    Console.WriteLine($"Failed to create the product. Status Code: {response.StatusCode}, Content: {response.Content.ReadAsStringAsync().Id}");
                 }
 
                 return response;
@@ -110,15 +116,14 @@ namespace CrudProductManager.ConsoleApp.Services
             try
             {
                 var response = await _httpClient.PutAsJsonAsync($"api/Product/{id}", updatedProduct);
-                string content = await response.Content.ReadAsStringAsync();
                 
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"Successfully updated the product: {content}");
+                    Console.WriteLine($"Successfully updated the product: {await response.Content.ReadAsStringAsync()}");
                 }
                 else
                 {
-                    Console.WriteLine($"Failed to update the product. Status Code: {response.StatusCode}, Content: {content}");
+                    Console.WriteLine($"Failed to update the product. Status Code: {response.StatusCode}, Content: {response.Content.ReadAsStringAsync()}");
                 }
 
                 return response;

@@ -20,6 +20,7 @@ while (true)
         switch (userInput)
         {
             case 1:
+                
                 Console.WriteLine("\nType the name of the product:");
                 string? productName = Console.ReadLine();
                 Console.WriteLine("\nType the description of the product:");
@@ -31,22 +32,47 @@ while (true)
 
                 HttpResponseMessage responseCreate = await apiService.Create(newProduct);
 
-                if (responseCreate.IsSuccessStatusCode)
-                {
-                    string responseContent = await responseCreate.Content.ReadAsStringAsync();
-                    
-                    int newProductId;
-                    
-                    if (int.TryParse(responseContent, out newProductId))
-                    {
-                        Console.WriteLine($"Product added sucessfully. ID: {newProductId}");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Error adding product. Status {responseCreate.StatusCode} ");
-                }
+                break;
+            
+            case 2:
+                
+                Console.WriteLine("Type the ID of the product you wish to delete:");
+                int productId = Convert.ToInt32(Console.ReadLine());
+                
+                HttpResponseMessage responseDelete = await apiService.Delete(productId);
+                
+                break;
+            case 3:
+                
+                Console.WriteLine("Type the ID of the product you wish to edit: ");
+                int productToEditId = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Type the new Name:");
+                string? newName = Console.ReadLine();
+                Console.WriteLine("Type the new Description:");
+                string? newDesc = Console.ReadLine();
+                Console.WriteLine("Type the new Price:");
+                decimal newPrice = Convert.ToDecimal(Console.ReadLine());
 
+                Product updatedProduct = new(productToEditId, newName!, newDesc!,newPrice);
+
+                HttpResponseMessage responseUpdate = await apiService.Update(productToEditId, updatedProduct);
+                
+                break;
+            case 4:
+                await apiService.GetAll();
+                break;
+            
+            case 5:
+                
+                Console.WriteLine("Shutting down Product Manager.");
+                Environment.Exit(0);
+                
+                break;
+            
+            default:
+                
+                Console.WriteLine("\nPlease, choose a valid option. (1 - 5)\n");
+                
                 break;
         }
     }
